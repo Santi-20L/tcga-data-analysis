@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.env
+.venv/
+env/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Data (too large to track)
+data/*.csv
+data/*.tsv
+data/*.txt
+data/*.gz
+data/*.zip
+
+# Results (regenerated from notebooks)
+results/plots/*.png
+results/plots/*.pdf
+
+# OS
+.DS_Store
+Thumbs.db
