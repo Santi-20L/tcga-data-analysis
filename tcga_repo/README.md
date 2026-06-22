@@ -8,11 +8,10 @@ This project applies Python-based data analysis tools to extract patterns and in
 
 ## Objectives
 
-- Clean and preprocess raw TCGA clinical data
-- Explore patient demographics and diagnosis distributions across cancer types
-- Identify patterns in survival outcomes (overall survival, disease-free survival)
-- Visualize key clinical variables and their relationships
-- Generate actionable insights from the data
+- Clean and preprocess raw, nested TCGA-GDC clinical data
+- Explore patient demographics and diagnosis distributions (focusing on TCGA-BRCA)
+- Perform rigorous survival analysis (Log-rank test, Kaplan-Meier, Cox Proportional Hazards)
+- Quantify the independent clinical impact of age and stage on mortality
 
 ---
 
@@ -83,7 +82,6 @@ pip install -r requirements.txt
 | numpy | Numerical computing |
 | matplotlib | Static visualizations |
 | seaborn | Statistical data visualization |
-| plotly | Interactive visualizations |
 | lifelines | Survival analysis (Kaplan-Meier) |
 | jupyter | Notebook environment |
 
