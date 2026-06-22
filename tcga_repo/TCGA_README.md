@@ -24,8 +24,7 @@ tcga-clinical-analysis/
 │   ├── 01_data_cleaning.ipynb        # Data loading, cleaning, preprocessing
 │   ├── 02_exploratory_analysis.ipynb # EDA: distributions, demographics, patterns
 │   └── 03_survival_insights.ipynb    # Survival analysis and key findings
-├── src/
-│   └── utils.py                      # Reusable helper functions
+│
 ├── data/
 │   └── README.md                     # Data source and download instructions
 ├── results/
@@ -149,7 +148,7 @@ Concordance index: **0.74**. Stage at diagnosis emerged as a substantially stron
 ## Author
 
 **Santi Isgrò**
-BSc in Computer Science — Università degli Studi di Catania
+BSc in Computer Science — Università degli Studi di Catania,
 MSc in Bioinformatics — in progress
 
 ---
