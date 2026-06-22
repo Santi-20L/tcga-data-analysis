@@ -23,6 +23,7 @@ tcga-clinical-analysis/
 │   ├── 01_data_cleaning.ipynb        # Data loading, cleaning, preprocessing
 │   ├── 02_exploratory_analysis.ipynb # EDA: distributions, demographics, patterns
 │   └── 03_survival_insights.ipynb    # Survival analysis and key findings
+│   └── 04_transcriptomic_target_discovery.ipynb    
 │
 ├── data/
 │   └── README.md                     # Data source and download instructions
@@ -91,8 +92,8 @@ pip install -r requirements.txt
 
 ```bash
 # Clone the repo
-git clone https://github.com/YOUR_USERNAME/tcga-clinical-analysis.git
-cd tcga-clinical-analysis
+git clone https://github.com/Santi-20L/tcga-data-analysis.git
+cd tcga-data-analysis
 
 # Install dependencies
 pip install -r requirements.txt
