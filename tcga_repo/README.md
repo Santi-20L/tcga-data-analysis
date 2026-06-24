@@ -160,7 +160,28 @@ Concordance index: **0.74**. Stage at diagnosis emerged as a substantially stron
 
 **Cohort after merge**: 1,492 patients (1,274 alive, 218 deceased — 14.6% positive class)
 
+#### Algorithm Selection & Rationale
+
+**Why LASSO (L1) for feature selection and not other methods?**
+
+With ~20,500 genes and ~1,100 patients, we faced severe high-dimensionality (p >> n). Standard models would overfit immediately.
+
+- **Why not Ridge (L2)?** Ridge shrinks coefficients but never sets them to exactly zero — great for prediction, but poor for interpretation. We wouldn't know which genes actually matter.
+- **Why not Elastic Net?** While robust, LASSO alone provides a sparser, more interpretable model, which is critical when the goal is biological discovery (identifying a small set of drug targets).
+- **Why not tree-based feature importance?** Tree ensembles can overfit noisy genomic data during feature selection. LASSO provides a mathematically rigorous, penalized regression framework that handles multicollinearity (common in co-expressed genes) much better.
+
+**Decision**: LassoCV with 5-fold cross-validation (α = 0.0188) reduced the feature space from 20,530 to **162 highly predictive genes**.
+
+**Why Random Forest and not Deep Learning or SVM?**
+
+- **Why not Deep Learning?** Deep learning requires massive sample sizes (tens/hundreds of thousands) to avoid overfitting. With n ≈ 1,100, a neural network would memorize the training data. Furthermore, DL is a black box; clinicians and pharmacologists cannot interpret the weights. In drug discovery, interpretability is non-negotiable.
+- **Why not Logistic Regression?** LASSO is already a linear model. We wanted to test whether a non-linear model could capture complex gene-gene interactions (epistasis) that LASSO might miss, while remaining interpretable via feature importance.
+- **Why not SVM?** SVMs scale poorly with large feature sets and are computationally expensive to tune for probability calibration (needed for ROC curves).
+
+**Decision**: Random Forest (500 trees, class_weight='balanced') — handles non-linearity, provides robust estimates, and ranks genes by predictive power.
+
 #### ROC Curve — Random Forest
+
 
 ![ROC Curve](results/plots/roc_curve.png)
 
@@ -189,6 +210,26 @@ Concordance index: **0.74**. Stage at diagnosis emerged as a substantially stron
 | DDIT4 | 0.0125 |
 
 LASSO reduced the feature space from 20,530 to **162 informative genes**. Several top predictors have known cancer relevance: EDA2R and DDIT4 are stress-response/apoptosis genes; UBTF is involved in ribosomal RNA transcription frequently dysregulated in cancer; AEBP2 is a Polycomb complex component associated with epigenetic regulation in breast cancer.
+
+---
+
+## Technical FAQs & Methodological Choices
+
+**Q1: Why did you remove clinical variables (Age, Stage) before running ML? Wouldn't adding them improve the AUC?**
+
+Yes, adding clinical variables would inflate the AUC further. However, this would be a form of clinical knowledge leakage. The goal was not to predict survival using the doctor's staging, but to discover hidden molecular mechanisms that predict survival independently of the macroscopic stage. By removing clinical features, we forced the algorithm to find the "invisible" biological drivers.
+
+**Q2: You used log2(RSEM+1) normalized data. Why not use raw counts and let DESeq2/EdgeR normalize them?**
+
+DESeq2 is the gold standard for differential expression (comparing two groups) because it models count data using a negative binomial distribution. However, for ML classification, linear algorithms like LASSO assume approximately normally distributed features. The log2 transformation stabilizes variance and approximates normality, the mathematical prerequisite for our pipeline.
+
+**Q3: Did you check for batch effects?**
+
+The dataset used (UCSC Xena TCGA-BRCA) is the standard pan-cancer normalized dataset, which has already undergone extensive batch correction by the TCGA network (using ComBat). For this proof-of-concept pipeline we relied on the rigorous pre-processing already applied to the Xena matrix.
+
+**Q4: Why use a simple Train/Test split instead of Nested Cross-Validation?**
+
+Nested CV is the strictest evaluation framework. However, with ~1,100 patients and extreme class imbalance (~14.6% deceased), standard k-fold CV risks producing folds with zero deceased patients, breaking the ROC calculation. An 80/20 stratified train/test split guarantees both classes are represented in the test set, providing a reliable generalization estimate for this proof-of-concept.
 
 ---
 
